@@ -14,7 +14,12 @@ typedef struct string_s {
 
 typedef struct string_dict_s {
     size_t _size;
-    string_t *dict[];
+    /*
+     * TODO this is only for test. After completing basic api, dict field will write as a tree structure
+     *  in order to save time when searching or modification
+     *  dict size is set up as 100, JUST FOR TEST REMEMBER
+     */
+    string_t **dict;
 } string_dict_t;
 
 string_t *string_create(char *);
