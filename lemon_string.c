@@ -33,6 +33,15 @@ void _dict_append(string_t *str) {
     DICT->_size++;
 }
 
+void _refix_interval(size_t *l, size_t *r, size_t minv, size_t maxv) {
+    if ((*l) == -1 || (*l) < minv) {
+        (*l) = minv;
+    }
+    if ((*r) == -1 || (*r) > maxv) {
+        (*r) = maxv;
+    }
+}
+
 string_t *string_create(char *rawstring) {
     //TODO This setup progress should write in a function like prehandle()
     //In order to control them easily, like if the user want to disable sharing memory
@@ -72,3 +81,48 @@ int string_delete(string_t *str) {
     return 1;
 }
 
+string_slice_t *string_slice_create(string_t *str, size_t l, size_t r) {
+    _refix_interval(&l, &r, 0, str->len);
+    if (l >= r) {
+        return NULL;
+    }
+
+    string_slice_t *new_s = (string_slice_t *) malloc(sizeof(string_slice_t));
+    new_s->len = r - l;
+    new_s->data = str->data + l;
+    new_s->l = l;
+    new_s->r = r;
+    new_s->succ = NULL;
+    new_s->succ_len = 0;
+    return new_s;
+}
+
+int string_slice_delete(string_slice_t *str) {
+    free(str->data);
+    free(str);
+    return 1;
+}
+
+//TODO current method complex is O(n), can we speed it up?
+string_slice_t *string_slice_merge(string_slice_t *LHS, string_slice_t *RHS) {
+    LHS->succ_len += RHS->succ_len;
+    string_slice_t *fs = LHS;
+    while ((fs->succ) != NULL) {
+        fs = fs->succ;
+    }
+    fs->succ = RHS;
+    return LHS;
+}
+
+string_t *slice_to_string(string_slice_t *slice) {
+    char *merge_info = malloc(sizeof(char) * ((slice->len) + (slice->succ_len) + 1));
+
+    size_t new_len = 0;
+    while (slice != NULL) {
+        memcpy(merge_info + new_len, slice->data, slice->len);
+        new_len += slice->len;
+        slice = slice->succ;
+    }
+    merge_info[new_len] = '\0';
+    return string_create(merge_info);
+}

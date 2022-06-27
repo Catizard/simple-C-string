@@ -12,6 +12,14 @@ typedef struct string_s {
     char *data;
 } string_t;
 
+typedef struct string_slice_s {
+    size_t len;
+    size_t l, r;
+    char *data;
+    struct string_slice_s *succ;
+    size_t succ_len;
+} string_slice_t;
+
 typedef struct string_dict_s {
     size_t _size;
     /*
@@ -25,5 +33,17 @@ typedef struct string_dict_s {
 string_t *string_create(char *);
 
 int string_compare(string_t *, string_t *);
+
+int string_compare_fn(string_t *, string_t *, int(*fn)(char *, size_t, char *, size_t));
+
+int string_delete(string_t *);
+
+string_slice_t *string_slice_create(string_t *, size_t, size_t);
+
+int string_slice_delete(string_slice_t *);
+
+string_slice_t *string_slice_merge(string_slice_t *, string_slice_t *);
+
+string_t *slice_to_string(string_slice_t *);
 
 #endif //SIMPLE_C_STRING_STRING_H
