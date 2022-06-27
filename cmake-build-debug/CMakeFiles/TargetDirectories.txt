@@ -1,0 +1,3 @@
+/mnt/e/demo/simple_c_string/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/e/demo/simple_c_string/cmake-build-debug/CMakeFiles/simple_c_string.dir
+/mnt/e/demo/simple_c_string/cmake-build-debug/CMakeFiles/edit_cache.dir
